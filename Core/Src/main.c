@@ -40,7 +40,10 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+#define MAX_ADC 1023
+#define DUTY_CYCLE_RANGE 3000
+#define NUM_BYTES 3
+#define DELAY 100
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -73,8 +76,7 @@ int main(void)
 	#define DUTY_CYCLE_RANGE = 3000
 	I was given some "syntax" errors
 	 */
-	int MAX_ADC = 1023;
-	int DUTY_CYCLE_RANGE = 3000;
+
 
   /* USER CODE END 1 */
 
@@ -108,9 +110,8 @@ int main(void)
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
 
   //Same as {0b00000001, 0b10000000, 0b00000000}; from datasheet binary -> hex
-  const uint8_t transmit_data[3] = {0x01, 0x80, 0x00};
-  const uint8_t recieve_data[3] = {0};
-
+  const uint8_t TRANSMIT_DATA[NUM_BYTES] = {0x01, 0x80, 0x00};
+  uint8_t recieve_Data[NUM_BYTES] = {0};
 
   /* USER CODE END 2 */
 
@@ -124,7 +125,7 @@ int main(void)
 	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);
 
 	  //timeout timing to 100ms - seemed like a reasonable value
-	  HAL_SPI_TransmitRecieve(&hspi1, transmit_Data, recieve_data, sizeof(transmit_data), 100);
+	  HAL_SPI_TransmitRecieve(&hspi1, TRANSMIT_DATA, recieve_Data, sizeof(transmit_data), DELAY);
 
 	  //chip select pulled high to end communication line
 	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
@@ -228,4 +229,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-//test code
